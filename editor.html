@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Asad Memon">
+    <meta name="description" content="Deep Learning School - Resources Microsite">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>Editor - Deep Learning School</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,500" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link href="css/style.css" rel="stylesheet">
+
+  </head>
+  <body>
+    <div class="masthead">
+      <h1><a href="/"><span>Deep Learning School</span></a></h1>
+      <p class="lead">
+        Resources Microsite
+      </p>
+      <!--
+      <div class="links">
+        <a href="https://twitter.com/" title="Follow me on Twitter" class="icon-twitter"></a>
+        <a href="https://github.com/" title="Follow me on GitHub" class="icon-github"></a>
+        <a href="https://dribbble.com/" title="Follow me on Dribbble" class="icon-dribbble"></a>
+      </div>
+      -->
+    </div>
+
+
+
+    <h3>Temporary Pad Editor</h3>
+    <p>
+      Stuff to be shared during the session can be added here.
+    </p>
+    <textarea id="tempPad"></textarea>
+    <br/>
+    <button id="saveTempPad">Save</button>
+    <hr>
+
+    <p class="footer"><b><a href="https://asadmemon.com">Asad Memon</a></b></p>
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/firebase.js"></script>
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-58030862-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+    <script>
+      var firebaseURL = "https://deeplearningworkshop.firebaseio.com/";
+      var fbPad = new Firebase(firebaseURL + "tempPad/");
+      fbPad.once('value',function(snapshot){
+        var newVal = snapshot.val() || "*Nothing here yet*";
+        var simplemde = new SimpleMDE({ element: document.getElementById("tempPad") });
+        simplemde.value(newVal);
+
+        $("#saveTempPad").click(function(){
+          var newVal = simplemde.value();
+          fbPad.set(newVal);
+        })
+
+      });
+
+
+      function getGithubIDs(){
+        var fbIDs = new Firebase(firebaseURL + "githubID");
+        fbIDs.once('value',function(snapshot){
+          var ids = snapshot.val() || {};
+          var arr = [];
+          var csv = ""
+          for (var i in ids){
+            arr.push(ids[i]);
+            csv += ids[i] + ",";
+          }
+          console.log(arr);
+          console.log(csv);
+        })
+      }
+
+    </script>
+
+
+  </body>
+</html>
